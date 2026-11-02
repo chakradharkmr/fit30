@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-GB" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy notice · Fit30 Reset</title>
+  <meta name="description" content="How Fit30 Reset handles your data: local by default, no analytics, optional Google sync.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header legal-header">
+    <div class="header-inner">
+      <a class="brand" href="./#dashboard"><span class="brand-name">Fit30 Reset</span></a>
+      <a class="btn btn-ghost" href="./#dashboard">Back to the app</a>
+    </div>
+  </header>
+  <main id="main" tabindex="-1" class="legal">
+    <h1>Privacy notice</h1>
+    <p class="muted">Last updated: November 2026</p>
+    <p>Fit30 Reset is designed to work without collecting personal data. This notice explains what is stored, where, and what leaves your device if you choose to use optional online features.</p>
+
+    <h2>Who is responsible</h2>
+    <p>The operator of this website is responsible for any personal data processed through it. Contact: [operator contact address].</p>
+
+    <h2>What is stored on your device</h2>
+    <p>Everything you enter — your profile (sex, age, height, weight, activity level, pace and eating pattern), targets, food diary, saved meals, weekly plans, grocery and preparation lists, health check-ins, workouts and theme — is stored in your browser’s local storage under the key <code>fit30.reset.v1</code>. It stays on this device unless you export it or turn on sync.</p>
+    <p>If you sign in, two further keys are used: <code>fit30.auth.v1</code> (your sign-in tokens and the name and email from your Google account) and <code>fit30.sync.v1</code> (whether sync is on and when the last upload happened). During sign-in, a one-time code verifier is held briefly in session storage. The service worker keeps a cached copy of the app’s own files so it can open offline; it never caches your data or any online lookups.</p>
+
+    <h2>No analytics, advertising or tracking</h2>
+    <p>There are no analytics, advertising, tracking pixels, session recording, third-party scripts, remote fonts or content delivery networks. All files are served from this site.</p>
+
+    <h2>Optional online lookups</h2>
+    <p>These run only when you start them, and go through this site’s own serverless functions:</p>
+    <ul>
+      <li><strong>Online food search</strong> sends your search words to this site’s server, which forwards them to USDA FoodData Central using the operator’s API key. No identifier is sent with the request.</li>
+      <li><strong>Barcode lookup</strong> sends the barcode number to this site’s server, which forwards it to Open Food Facts. Product images then load directly from openfoodfacts.org, which can see your IP address.</li>
+      <li><strong>Exercise search</strong> sends your search words to this site’s server, which forwards them to wger.de. Exercise images load directly from wger.de.</li>
+    </ul>
+    <p>As with any website, the hosting provider (Netlify) processes technical request data such as IP addresses to deliver the site and these functions.</p>
+
+    <h2>Camera</h2>
+    <p>Barcode scanning uses your camera only after you start it and grant permission. Images are analysed in your browser and are never uploaded. The camera stops when scanning ends or the scanning window closes.</p>
+
+    <h2>Notifications</h2>
+    <p>The evening reminder is off by default. If you turn it on, your browser shows a local notification while the app is open. There is no push server and nothing is sent anywhere.</p>
+
+    <h2>Export, import and deletion</h2>
+    <p>In Settings you can export all your data as a JSON file, import a backup (after confirming), and reset all data, which deletes the <code>fit30.reset.v1</code> record from this browser. Clearing your browser’s site data also removes everything.</p>
+
+    <h2>Optional account and Google sync</h2>
+    <p>Accounts exist only to carry one copy of your data between devices. If the operator has enabled them and you choose “Continue with Google”:</p>
+    <ul>
+      <li><strong>What is stored:</strong> your Google account’s email address and name (held by Supabase Auth), and one record containing your Fit30 Reset data, your email and timestamps, in a Supabase Postgres table.</li>
+      <li><strong>Who processes it:</strong> Supabase, as the operator’s processor for authentication and storage; Google, to authenticate you; and Netlify, which runs the functions that read and write your record.</li>
+      <li><strong>How sign-in works:</strong> OAuth 2.0 with PKCE. Your Google password is never seen by this site. Access and refresh tokens are stored in your browser’s local storage under <code>fit30.auth.v1</code> and are refreshed automatically.</li>
+      <li><strong>Access control:</strong> the database table has row-level security enabled with no policies, so browsers cannot read or write it directly. Every read and write goes through this site’s functions, which verify your token with Supabase and only access the record belonging to the verified user.</li>
+      <li><strong>Service-key boundary:</strong> the privileged Supabase service key is held only in server-side environment variables and is never sent to your browser.</li>
+      <li><strong>Deletion:</strong> “Delete cloud copy” removes your record and keeps local data. “Delete account” removes your sign-in and your record, then signs you out. Signing out removes the tokens from this browser and leaves the cloud copy in place.</li>
+    </ul>
+
+    <h2>Security limitations</h2>
+    <p>Data in local storage is not encrypted and can be read by anyone with access to your device and browser profile, or by malicious browser extensions. Use a device lock and keep your browser up to date. Sync is last-write-wins and does not merge changes; keep exported backups of anything important.</p>
+
+    <h2>Children</h2>
+    <p>Fit30 Reset is intended for adults aged 18 and over and is not directed at children.</p>
+
+    <h2>Legal basis and your rights</h2>
+    <p>Local storage is used because you ask the app to save your entries. Where accounts are enabled, your account data is processed to provide the sync service you request (performance of a contract) and with your consent for health-related information you choose to sync; you can withdraw consent at any time by deleting the cloud copy or your account. Depending on where you live, you may have rights to access, correct, delete, restrict or port your data and to object to processing, and to complain to a data-protection authority. Most of these can be exercised directly in the app; for anything else contact [operator contact address]. This notice is governed by the law of [operator jurisdiction].</p>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Fit30 Reset is educational software, not medical advice.</p>
+      <p><a href="./#dashboard">App</a> · <a href="privacy.html" aria-current="page">Privacy</a> · <a href="terms.html">Terms</a></p>
+    </div>
+  </footer>
+</body>
+</html>

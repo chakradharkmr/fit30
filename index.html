@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-GB" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Fit30 Reset — a calm 30-day diet and movement plan</title>
+  <meta name="description" content="A free, local-first 30-day plan for balanced eating, strength training and walking. No account required.">
+  <meta name="theme-color" content="#1f6f5c" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121614" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="account.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-action="skip-to-main">Skip to main content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#dashboard" aria-label="Fit30 Reset, today">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="16" cy="16" r="12.5" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="62 100" transform="rotate(-90 16 16)" stroke-linecap="round"/><circle cx="16" cy="16" r="4" fill="currentColor"/></svg>
+        <span class="brand-name">Fit30 Reset</span>
+      </a>
+      <nav class="primary-nav" aria-label="Main">
+        <ul>
+          <li><a href="#dashboard" data-nav="dashboard"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg><span>Today</span></a></li>
+          <li><a href="#food" data-nav="food"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="13" r="7"/><path d="M12 6V3M9 4l3 2 3-2"/></svg><span>Food</span></a></li>
+          <li><a href="#planner" data-nav="planner"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Planner</span></a></li>
+          <li><a href="#training" data-nav="training"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12h3M18 12h3M6 8v8M18 8v8M9 10v4M15 10v4M9 12h6"/></svg><span>Training</span></a></li>
+          <li><a href="#progress" data-nav="progress"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 19h16M6 16l4-5 3 3 5-7"/></svg><span>Progress</span></a></li>
+          <li><a href="#learn" data-nav="learn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5h6a2 2 0 012 2v12a2 2 0 00-2-2H4zM20 5h-6a2 2 0 00-2 2v12a2 2 0 012-2h6z"/></svg><span>Learn</span></a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="btn btn-icon header-btn" data-action="theme-toggle" aria-label="Change theme (light, dark or system)">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 000 16z" fill="currentColor"/></svg>
+        </button>
+        <a class="btn btn-icon header-btn" href="#settings" data-nav="settings" aria-label="Settings">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>
+        </a>
+        <button type="button" class="account-button" id="account-button" data-action="account-open" aria-label="Account and sync">
+          <span class="avatar" aria-hidden="true"></span><span class="account-label">Account</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <div id="view-root" class="view">
+      <section class="hero" aria-labelledby="hero-title">
+        <p class="eyebrow">Fit30 Reset · a 30-day plan</p>
+        <h1 id="hero-title" tabindex="-1">Lose up to <strong>3 kg</strong> in 30 days. Keep the habits.</h1>
+        <p class="hero-lede">A calm, structured month of balanced eating, strength training and walking. 3 kg is an ambitious upper target, not a promise — many people lose less, and that is fine. Your waist measurement, fitness and consistency count just as much as the scales.</p>
+        <p class="hero-fineprint">Free · No account required · Local by default, optional Google sync</p>
+      </section>
+      <section class="safety" aria-labelledby="safety-title">
+        <h2 id="safety-title">Safety first</h2>
+        <p>Fit30 Reset is educational software for generally healthy adults. It is not medical diagnosis, treatment or personalised clinical care.</p>
+        <p><strong>Seek clinical advice before starting</strong> if you are pregnant or postpartum, under 18, frail, have or have had an eating disorder, kidney disease, uncontrolled diabetes, significant heart disease, recent surgery, or serious back or pelvic-floor problems.</p>
+        <p><strong>Stop exercising and seek help</strong> if you notice chest pain, faintness, severe breathlessness, neurological symptoms such as numbness, weakness or changes in vision or speech, or sharp or radiating pain. In an emergency call 999 or 112.</p>
+      </section>
+      <noscript><p class="notice notice-warning">Fit30 Reset needs JavaScript to run. Your data is stored only in this browser.</p></noscript>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Fit30 Reset is educational software, not medical advice.</p>
+      <p><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="#learn">How it works</a></p>
+    </div>
+  </footer>
+
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite" aria-atomic="false"></div>
+  <dialog id="app-dialog" class="dialog"></dialog>
+  <dialog id="confirm-dialog" class="dialog dialog-small" role="alertdialog"></dialog>
+</body>
+</html>
