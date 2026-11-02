@@ -19,21 +19,77 @@ export function methodNotAllowed(allowed) {
   return json(405, { error: 'method_not_allowed', message: `Use ${allowed.join(' or ')}.` }, { Allow: allowed.join(', ') });
 }
 
+const URL_VARS = ['SUPABASE_URL', 'SUPABASE_PROJECT_URL', 'SUPABASE_DATABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL', 'VITE_SUPABASE_URL', 'PUBLIC_SUPABASE_URL'];
+const ANON_VARS = ['SUPABASE_ANON_KEY', 'SUPABASE_PUBLISHABLE_KEY', 'NEXT_PUBLIC_SUPABASE_ANON_KEY', 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY', 'VITE_SUPABASE_ANON_KEY', 'PUBLIC_SUPABASE_ANON_KEY'];
+const SERVICE_VARS = ['SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SECRET_KEY', 'SUPABASE_SERVICE_KEY'];
+
+function firstSet(env, names) {
+  for (const name of names) {
+    const v = env[name];
+    if (typeof v === 'string' && v.trim()) return { name, value: v.trim().replace(/^["']|["']$/g, '') };
+  }
+  return null;
+}
+
+// Accepts "https://<ref>.supabase.co", with or without a trailing slash or a pasted /rest/v1 or /auth/v1 path.
+export function normaliseSupabaseUrl(raw) {
+  if (typeof raw !== 'string') return '';
+  try {
+    const u = new URL(raw.trim());
+    return u.protocol === 'https:' && u.hostname ? u.origin : '';
+  } catch {
+    return '';
+  }
+}
+
+function jwtRole(key) {
+  const parts = key.split('.');
+  if (parts.length !== 3) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(parts[1].replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8'));
+    return typeof payload.role === 'string' ? payload.role : null;
+  } catch {
+    return null;
+  }
+}
+
+function isSecretKey(key) {
+  return key.startsWith('sb_secret_') || jwtRole(key) === 'service_role';
+}
+
 export function readConfig(env = process.env) {
-  const url = typeof env.SUPABASE_URL === 'string' ? env.SUPABASE_URL.trim().replace(/\/+$/, '') : '';
-  const anonKey = typeof env.SUPABASE_ANON_KEY === 'string' ? env.SUPABASE_ANON_KEY.trim() : '';
-  const serviceKey = typeof env.SUPABASE_SERVICE_ROLE_KEY === 'string' ? env.SUPABASE_SERVICE_ROLE_KEY.trim() : '';
-  const enabled = /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(url) && anonKey.length > 0 && serviceKey.length > 0;
-  return { enabled, url, anonKey, serviceKey };
+  const problems = [];
+  const urlVar = firstSet(env, URL_VARS);
+  const anonVar = firstSet(env, ANON_VARS);
+  const serviceVar = firstSet(env, SERVICE_VARS);
+  let url = '';
+  if (!urlVar) problems.push('SUPABASE_URL is not set');
+  else {
+    url = normaliseSupabaseUrl(urlVar.value);
+    if (!url) problems.push(`${urlVar.name} must be the https project URL, e.g. https://<project-ref>.supabase.co`);
+  }
+  let anonKey = anonVar ? anonVar.value : '';
+  const serviceKey = serviceVar ? serviceVar.value : '';
+  if (!anonVar) problems.push('SUPABASE_ANON_KEY is not set');
+  else if (isSecretKey(anonKey)) {
+    problems.push(`${anonVar.name} holds a secret/service-role key; use the anon (publishable) key instead`);
+    anonKey = '';
+  }
+  if (!serviceVar) problems.push('SUPABASE_SERVICE_ROLE_KEY is not set');
+  else if (anonKey && serviceKey === anonKey) problems.push(`${serviceVar.name} is the same as the anon key; use the service_role (secret) key`);
+  const enabled = problems.length === 0;
+  return { enabled, url, anonKey: enabled ? anonKey : '', serviceKey: enabled ? serviceKey : '', problems };
 }
 
 export const SETUP_MESSAGE =
   'Accounts are not configured on this site. The operator needs to set SUPABASE_URL, SUPABASE_ANON_KEY and ' +
-  'SUPABASE_SERVICE_ROLE_KEY in Netlify and redeploy. Everything keeps working locally without an account.';
+  'SUPABASE_SERVICE_ROLE_KEY in Netlify (scope: Functions) and redeploy. Everything keeps working locally without an account.';
 
 export function publicConfig(env = process.env) {
   const cfg = readConfig(env);
-  if (!cfg.enabled) return { enabled: false, provider: 'google', message: SETUP_MESSAGE };
+  if (!cfg.enabled) {
+    return { enabled: false, provider: 'google', message: `${SETUP_MESSAGE} Problems found: ${cfg.problems.join('; ')}.`, problems: cfg.problems };
+  }
   return { enabled: true, supabaseUrl: cfg.url, supabaseAnonKey: cfg.anonKey, provider: 'google' };
 }
 
@@ -56,8 +112,10 @@ export function validateStatePayload(body) {
   return { ok: true, state, size };
 }
 
+// New-style Supabase secret keys (sb_secret_...) are not JWTs and must only be sent as the apikey header.
 function serviceHeaders(cfg, extra = {}) {
-  return { apikey: cfg.serviceKey, Authorization: `Bearer ${cfg.serviceKey}`, Accept: 'application/json', ...extra };
+  const auth = cfg.serviceKey.startsWith('sb_') ? {} : { Authorization: `Bearer ${cfg.serviceKey}` };
+  return { apikey: cfg.serviceKey, ...auth, Accept: 'application/json', ...extra };
 }
 
 async function timedFetch(fetchImpl, url, init = {}, ms = 10000) {

@@ -76,6 +76,15 @@ test('publicConfig never exposes the service key', () => {
   assert.equal(off.enabled, false);
   assert.ok(!JSON.stringify(off).includes(SERVICE));
   assert.equal(readConfig({ ...ENV, SUPABASE_URL: 'http://insecure.example' }).enabled, false);
+  assert.equal(readConfig({ ...ENV, SUPABASE_URL: 'https://abcd1234.supabase.co/rest/v1/' }).url, ENV.SUPABASE_URL);
+  const aliases = readConfig({ SUPABASE_DATABASE_URL: ENV.SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_x', SUPABASE_SECRET_KEY: 'sb_secret_y' });
+  assert.equal(aliases.enabled, true);
+  const serviceJwt = 'h.' + Buffer.from(JSON.stringify({ role: 'service_role' })).toString('base64url') + '.s';
+  const leaked = publicConfig({ ...ENV, SUPABASE_ANON_KEY: serviceJwt });
+  assert.equal(leaked.enabled, false);
+  assert.ok(!JSON.stringify(leaked).includes(serviceJwt) && !JSON.stringify(leaked).includes(SERVICE));
+  assert.match(leaked.message, /secret\/service-role key/);
+  assert.match(publicConfig({ ...ENV, SUPABASE_URL: undefined }).message, /SUPABASE_URL is not set/);
 });
 
 test('account-config returns a setup message when disabled', async () => {
